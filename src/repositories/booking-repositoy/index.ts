@@ -1,11 +1,14 @@
 import { prisma } from '@/config';
 
-async function postBooking(){
-    
+async function findPeopleOccupyingARoom(roomId: number) {
+  return prisma.booking.findMany({ where: { id: roomId } });
 }
 
-const bookingRepositoy={
-    postBooking
-}
+async function postBooking(userId: number, roomId: number) {}
+
+const bookingRepositoy = {
+  postBooking,
+  findPeopleOccupyingARoom,
+};
 
 export default bookingRepositoy;
