@@ -19,13 +19,9 @@ import {
 } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
 
-beforeAll(async () => {
-  await init();
-});
+beforeAll(async () => await init());
 
-beforeEach(async () => {
-  await cleanDb();
-});
+beforeEach(async () => await cleanDb());
 
 const server = supertest(app);
 
