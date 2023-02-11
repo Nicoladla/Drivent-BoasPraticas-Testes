@@ -87,10 +87,9 @@ describe('POST /booking', () => {
       const payment = await createPayment(ticket.id, ticketType.price);
       const hotel = await createHotel();
       const room = await createRoomWithHotelId(hotel.id);
-      await createBooking(room.id);
+      const booking = await createBooking(room.id);
 
       const result = await server.post('/booking').set('Authorization', `Bearer ${token}`).send({ roomId: room.id });
-      console.log(result);
 
       expect(result.status).toEqual(httpStatus.FORBIDDEN);
     });
@@ -121,6 +120,24 @@ describe('POST /booking', () => {
       const result = await server.post('/booking').set('Authorization', `Bearer ${token}`).send({ roomId: room.id });
 
       expect(result.status).toEqual(httpStatus.FORBIDDEN);
+    });
+  });
+
+  describe('when token, registration, ticket and roomId is valid', () => {
+    it('should respond status 409 if user already has a booking', async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const hotel = await createHotel();
+      const reservedRoom = await createRoomWithHotelId(hotel.id);
+      const roomToBeBooked = await createRoomWithHotelId(hotel.id);
+      const booking = await createBooking(reservedRoom.id, user);
+
+      const result = await server
+        .post('/booking')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ roomId: roomToBeBooked.id });
+
+      expect(result.status).toEqual(httpStatus.CONFLICT);
     });
   });
 });
