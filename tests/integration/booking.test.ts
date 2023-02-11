@@ -206,7 +206,7 @@ describe('POST /booking', () => {
     });
   });
 });
-//falta testar de a reserva pertence ao usuário
+
 describe('PUT /booking/:bookingId', () => {
   it('should respond with status 401 if no token is given', async () => {
     const result = await server.put('/booking/0');
@@ -300,8 +300,6 @@ describe('PUT /booking/:bookingId', () => {
         .put(`/booking/${bookedBooking.id}`)
         .set('Authorization', `Bearer ${token}`)
         .send({ roomId: roomToBeBooked.id });
-
-      console.log(result.text);
 
       expect(result.status).toEqual(httpStatus.FORBIDDEN);
     });
