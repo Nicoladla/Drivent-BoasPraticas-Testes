@@ -14,7 +14,7 @@ export async function createBooking(roomId: number, userInput?: User) {
 
   return prisma.booking.create({
     data: {
-      userId: 2,
+      userId: user.id,
       roomId,
     },
   });
