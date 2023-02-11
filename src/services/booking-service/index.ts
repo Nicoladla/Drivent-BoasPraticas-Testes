@@ -39,7 +39,9 @@ async function postBooking(userId: number, roomId: number) {
 
 async function updateBooking(bookingId: number, userId: number, roomId: number) {
   const userHasbooking = await bookingRepositoy.getBookingById(bookingId);
-  if (!userHasbooking) throw forbiddenError('User does not have a reservation to update');
+  if (!userHasbooking) throw forbiddenError('Booking not found');
+
+  if (userHasbooking.userId !== userId) throw forbiddenError('This booking does not belong to this user');
 
   const updatedBooking = await bookingRepositoy.updateBooking(bookingId, userId, roomId);
   return updatedBooking;
