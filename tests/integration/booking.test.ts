@@ -1,4 +1,5 @@
 import app, { init } from '@/app';
+import { prisma } from '@/config';
 import faker from '@faker-js/faker';
 import { TicketStatus } from '@prisma/client';
 import httpStatus from 'http-status';
@@ -138,6 +139,28 @@ describe('POST /booking', () => {
         .send({ roomId: roomToBeBooked.id });
 
       expect(result.status).toEqual(httpStatus.CONFLICT);
+    });
+
+    it('should respond status 200 and the bookingId when the booking has been successfully made', async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTicketTypeWithHotel();
+      const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      const payment = await createPayment(ticket.id, ticketType.price);
+      const hotel = await createHotel();
+      const room = await createRoomWithHotelId(hotel.id);
+
+      const beforeCount = await prisma.booking.count();
+
+      const result = await server.post('/booking').set('Authorization', `Bearer ${token}`).send({ roomId: room.id });
+
+      const afterCount = await prisma.booking.count();
+
+      expect(result.status).toEqual(httpStatus.OK);
+      expect(result.body).toEqual({ bookingId: expect.any(Number) });
+      expect(beforeCount).toBe(0);
+      expect(afterCount).toBe(1);
     });
   });
 });
