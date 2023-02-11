@@ -26,3 +26,26 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
     }
   }
 }
+
+export async function putBooking(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const roomId = Number(req.body.roomId);
+  const bookingId = Number(req.params.bookingId);
+
+  if (isNaN(bookingId)) return res.status(httpStatus.BAD_REQUEST).send('Invalid params');
+
+  try {
+    await bookingService.checkRoomId(roomId);
+
+    const updatedBooking = await bookingService.updateBooking(bookingId, userId, roomId);
+
+    res.status(httpStatus.OK).send({ bookingId: updatedBooking.id });
+  } catch (err) {
+    if (err.name === 'NotFoundError') {
+      return res.status(httpStatus.NOT_FOUND).send(err.message);
+    }
+    if (err.name === 'forbiddenError') {
+      return res.status(httpStatus.FORBIDDEN).send(err.message);
+    }
+  }
+}

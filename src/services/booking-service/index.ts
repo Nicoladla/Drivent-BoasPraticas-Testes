@@ -37,10 +37,19 @@ async function postBooking(userId: number, roomId: number) {
   return booking;
 }
 
+async function updateBooking(bookingId: number, userId: number, roomId: number) {
+  const userHasbooking = await bookingRepositoy.getBookingById(bookingId);
+  if (!userHasbooking) throw notFoundError();
+
+  const updatedBooking = await bookingRepositoy.updateBooking(bookingId, userId, roomId);
+  return updatedBooking;
+}
+
 const bookingService = {
   postBooking,
   checkIfUserCanMakeReservation,
   checkRoomId,
+  updateBooking,
 };
 
 export default bookingService;
