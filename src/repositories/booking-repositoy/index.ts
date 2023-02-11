@@ -5,7 +5,7 @@ function getBookingByUserId(userId: number) {
 }
 
 function findPeopleOccupyingARoom(roomId: number) {
-  return prisma.booking.findMany({ where: { id: roomId } });
+  return prisma.booking.findMany({ where: { roomId } });
 }
 
 function postBooking(userId: number, roomId: number) {

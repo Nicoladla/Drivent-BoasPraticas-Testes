@@ -15,7 +15,7 @@ async function checkRoomId(roomId: number) {
   const spacesOccupiedInRoom = await bookingRepositoy.findPeopleOccupyingARoom(roomId);
   const remainingVacancies = roomExist.capacity - spacesOccupiedInRoom.length;
 
-  if (remainingVacancies === 0) throw forbiddenError('The room has vacancies filled'); //falta validar
+  if (remainingVacancies === 0) throw forbiddenError('The room has vacancies filled');
 }
 
 async function checkIfUserCanMakeReservation(userId: number) {
@@ -33,8 +33,8 @@ async function postBooking(userId: number, roomId: number) {
   const userHasbooking = await bookingRepositoy.getBookingByUserId(userId);
   if (userHasbooking) throw conflictError('The user already has a reservation');
 
-  const booking= await bookingRepositoy.postBooking(userId, roomId)
-  return booking
+  const booking = await bookingRepositoy.postBooking(userId, roomId);
+  return booking;
 }
 
 const bookingService = {
