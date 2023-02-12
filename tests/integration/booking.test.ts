@@ -61,7 +61,7 @@ describe('GET /booking', () => {
       const hotel = await createHotel();
       const room = await createRoomWithHotelId(hotel.id);
 
-      const result = await server.get('/booking').set('Authorization', `Bearer ${token}`).send({ roomId: room.id });
+      const result = await server.get('/booking').set('Authorization', `Bearer ${token}`);
 
       expect(result.status).toEqual(httpStatus.NOT_FOUND);
     });
@@ -74,7 +74,7 @@ describe('GET /booking', () => {
       const room = await createRoomWithHotelId(hotel.id);
       const booking = await createBooking(room.id, user);
 
-      const result = await server.get('/booking').set('Authorization', `Bearer ${token}`).send({ roomId: room.id });
+      const result = await server.get('/booking').set('Authorization', `Bearer ${token}`);
 
       expect(result.status).toEqual(httpStatus.OK);
       expect(result.body).toEqual({
@@ -186,7 +186,7 @@ describe('POST /booking', () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createTicketTypeWithoutHotel();
+      const ticketType = await createTicketTypeWithHotel();
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
       const hotel = await createHotel();
       const room = await createRoomWithHotelId(hotel.id);
@@ -232,9 +232,9 @@ describe('POST /booking', () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const hotel = await createHotel();
-      const reservedRoom = await createRoomWithHotelId(hotel.id);
+      const bookedRoom = await createRoomWithHotelId(hotel.id);
       const roomToBeBooked = await createRoomWithHotelId(hotel.id);
-      const booking = await createBooking(reservedRoom.id, user);
+      const booking = await createBooking(bookedRoom.id, user);
 
       const result = await server
         .post('/booking')
