@@ -6,6 +6,14 @@ import hotelRepository from '@/repositories/hotel-repository';
 import ticketRepository from '@/repositories/ticket-repository';
 import { Room } from '@prisma/client';
 
+async function getBooking(userId: number) {
+  const booking = await bookingRepositoy.getBookingByUserId(userId);
+
+  if (!booking) throw notFoundError();
+
+  return booking;
+}
+
 async function checkRoomId(roomId: number) {
   if (isNaN(roomId)) throw notFoundError();
 
@@ -52,6 +60,7 @@ const bookingService = {
   checkIfUserCanMakeReservation,
   checkRoomId,
   updateBooking,
+  getBooking
 };
 
 export default bookingService;

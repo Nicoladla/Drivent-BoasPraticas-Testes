@@ -1,7 +1,7 @@
 import { prisma } from '@/config';
 
 function getBookingByUserId(userId: number) {
-  return prisma.booking.findFirst({ where: { userId } });
+  return prisma.booking.findFirst({ where: { userId }, select: { id: true, Room: true } });
 }
 
 function getBookingById(id: number) {
